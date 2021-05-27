@@ -19,21 +19,36 @@ class Todo < ActiveRecord::Base
     "#{id}. #{display_status} #{todo_text} #{display_date}"
   end
 
+  #found overdue todos
+  def self.overdue
+    where("due_date < ?", Date.today)
+  end
+
+  #found today due todos
+  def self.due_today
+    where("due_date = ?", Date.today)
+  end
+
+  #found which todos have a days
+  def self.due_later
+    where("due_date > ?", Date.today)
+  end
+
   #Display the Todo-list with patterns
   def self.show_list
     date = Date.today
     puts "My Todo-list\n\n"
 
     puts "Overdue\n"
-    puts where("due_date<?", date).to_displayable_list
+    puts overdue.map { |todo| todo.to_displayable_string }
     puts "\n\n"
 
     puts "Due Today\n"
-    puts where("due_date=?", date).to_displayable_list
+    puts due_today.map { |todo| todo.to_displayable_string }
     puts "\n\n"
 
     puts "Due Later\n"
-    puts where("due_date>?", date).to_displayable_list
+    puts due_later.map { |todo| todo.to_displayable_string }
     puts "\n\n"
   end
 
